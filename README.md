@@ -301,8 +301,22 @@ Drop Database
 
 
 ## 2.4. TRUNCATE:
-## 2.5. RENAME:
+`TRUNCATE` removes all rows from a table Unlike DROP, the table structure remains.
 
+```sql
+TRUNCATE TABLE users;
+```
+
+```sql
+TRUNCATE TABLE orders, users;
+```
+
+## 2.5. RENAME:
+`RENAME` changes the name of a database or table.
+
+```sql
+RENAME TABLE users TO customers;
+```
 
 # 3. DML: 
 # 4. DQL:
