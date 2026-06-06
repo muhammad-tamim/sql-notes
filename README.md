@@ -273,6 +273,33 @@ RENAME TO customers;
 
 
 ## 2.3. DROP: 
+The `DROP` command permanently removes databases or tables.
+
+Drop Table: 
+
+```sql
+DROP TABLE users;
+```
+
+Drop Table If Exists: 
+
+```sql
+DROP TABLE IF EXISTS users;
+```
+
+Drop Multiple Tables: 
+
+```sql
+DROP TABLE users, orders;
+```
+
+Drop Database: 
+
+```sql
+Drop Database
+```
+
+
 ## 2.4. TRUNCATE:
 ## 2.5. RENAME:
 
