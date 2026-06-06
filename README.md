@@ -1,5 +1,6 @@
 <h1 align="center">SQL Notes</h2>
 
+
 - [1. Introduction:](#1-introduction)
 - [2. DDL:](#2-ddl)
   - [2.1. CREATE:](#21-create)
@@ -8,13 +9,15 @@
       - [2.1.2.1. Schema:](#2121-schema)
         - [2.1.2.1.1. Common Data Types for Schema](#21211-common-data-types-for-schema)
         - [2.1.2.1.2. Common Constraints for Schema:](#21212-common-constraints-for-schema)
-  - [2.2. DROP:](#22-drop)
-  - [2.3. ALTER:](#23-alter)
+  - [2.2. ALTER:](#22-alter)
+  - [2.3. DROP:](#23-drop)
   - [2.4. TRUNCATE:](#24-truncate)
+  - [2.5. RENAME:](#25-rename)
 - [3. DML:](#3-dml)
 - [4. DQL:](#4-dql)
 - [5. DCL:](#5-dcl)
 - [6. TCL:](#6-tcl)
+
 
 
 # 1. Introduction: 
@@ -199,8 +202,77 @@ CREATE TABLE users (
 );
 ```
 
-## 2.2. DROP: 
-## 2.3. ALTER:
+## 2.2. ALTER:
+The `ALTER` command is used to modify existing table.
+
+```sql
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    name VARCHAR(50),
+    email VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+);
+```
+
+Now if we want to modify the table, we can use the `ALTER` command.
+
+```sql
+ALTER TABLE users ADD COLUMN password VARCHAR(100);
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+ALTER TABLE users DROP COLUMN description;
+ALTER TABLE users RENAME COLUMN name TO full_name;
+
+-- or
+ALTER TABLE users
+    ADD COLUMN password VARCHAR(100),
+    ADD COLUMN phone VARCHAR(20)
+    DROP COLUMN description;
+    RENAME COLUMN name TO full_name
+```
+
+Change Data Type: 
+
+```sql
+ALTER TABLE users
+ALTER COLUMN mobile TYPE VARCHAR(50);
+```
+
+Set NOT NULL:
+
+```sql
+ALTER TABLE users
+ALTER COLUMN name SET NOT NULL;
+```
+
+```sql
+ALTER TABLE users
+ALTER COLUMN name DROP NOT NULL;
+```
+
+Add Constraint: 
+
+```sql
+ALTER TABLE users
+ADD CONSTRAINT unique_email
+UNIQUE(email);
+```
+
+Drop Constraint: 
+
+```sql
+ALTER TABLE users
+DROP CONSTRAINT unique_email;
+```
+
+Rename Table: 
+```sql
+ALTER TABLE users
+RENAME TO customers;
+```
+
+
+## 2.3. DROP: 
 ## 2.4. TRUNCATE:
 ## 2.5. RENAME:
 
