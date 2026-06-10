@@ -7,9 +7,12 @@
     - [2.1.1. CREATE DATABASE:](#211-create-database)
     - [2.1.2. CREATE TABLE:](#212-create-table)
       - [2.1.2.1. Schema:](#2121-schema)
-        - [2.1.2.1.1. Common Data Types for Schema](#21211-common-data-types-for-schema)
-        - [2.1.2.1.2. Common Constraints for Schema:](#21212-common-constraints-for-schema)
+        - [2.1.2.1.1. Common SQL Data Types For Schema:](#21211-common-sql-data-types-for-schema)
+        - [2.1.2.1.2. Common SQL Constraints For Schema:](#21212-common-sql-constraints-for-schema)
   - [2.2. ALTER:](#22-alter)
+    - [Database Level:](#database-level)
+    - [Table Level:](#table-level)
+    - [Column Level:](#column-level)
   - [2.3. DROP:](#23-drop)
   - [2.4. TRUNCATE:](#24-truncate)
   - [2.5. RENAME:](#25-rename)
@@ -23,31 +26,33 @@
 # 1. Introduction: 
 SQL (Structured Query Language) is a standardized language for all relational databases management systems. Every RDBMS, such as MySQL and PostgreSQL etc, uses SQL as its primary language and add extra specific features on it. There are 5 main categories of SQL Commands: 
 
-| Category | Full Form                    | commands                                | Purpose                                                       |
-| -------- | ---------------------------- | --------------------------------------- | ------------------------------------------------------------- |
-| DDL      | Data Definition Language     | `CREATE, ALTER, DROP, TRUNCATE, RENAME` | Define and modify database structure (e.g. databases, tables) |
-| DML      | Data Manipulation Language   | `INSERT, UPDATE, DELETE`                | Insert, update, and delete data form tables                   |
-| DQL      | Data Query Language          | `SELECT`                                | Retrieve data from tables                                     |
-| DCL      | Data Control Language        | `GRANT, REVOKE`                         | Control permissions and access                                |
-| TCL      | Transaction Control Language | `BEGIN, COMMIT, ROLLBACK, SAVEPOINT`    | Manage transactions                                           |
+| Category | Full Form                    | commands                                               | Purpose                                                       |
+| -------- | ---------------------------- | ------------------------------------------------------ | ------------------------------------------------------------- |
+| DDL      | Data Definition Language     | `CREATE, ALTER, DROP, TRUNCATE, RENAME`                | Define and modify database structure (e.g. databases, tables) |
+| DML      | Data Manipulation Language   | `INSERT, UPDATE, DELETE`                               | Insert, update, and delete data form tables                   |
+| DQL      | Data Query Language          | `SELECT`                                               | Retrieve data from tables                                     |
+| DCL      | Data Control Language        | `GRANT, REVOKE`                                        | Control permissions and access                                |
+| TCL      | Transaction Control Language | `BEGIN/START TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT` | Manage transactions                                           |
 
 ![image](./assets/images/introduction/sql_commands.webp)
 
-Note: SQL is a query language and cannot run independently. It requires a DBMS specifically RDBMS, such as MySQL or PostgreSQL etc to run.
+**Note:** SQL is a query language and cannot run independently. It requires a DBMS specifically RDBMS, such as MySQL or PostgreSQL etc to run.
 
-# 2. DDL:
-DDL (Data Definition Language) is used to define and modify database structure (e.g. databases, tables). It includes commands such as `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, and `RENAME`.
+# 2. DDL: 
+DDL (Data Definition Language) is a category of SQL commands used to define, create, modify, and remove database structures such as databases, tables etc.
 
 ## 2.1. CREATE:
 The `CREATE` command used to create new databases or tables.
 
-### 2.1.1. CREATE DATABASE:  
+### 2.1.1. CREATE DATABASE:
+The `CREATE DATABASE` command used to create new databases.
 
 ```sql
 CREATE DATABASE database_name;
 ```
 
 ### 2.1.2. CREATE TABLE:
+The `CREATE TABLE` command used to create new tables.
 
 ```sql
 CREATE TABLE table_name (
@@ -55,6 +60,16 @@ CREATE TABLE table_name (
     .....schema.....
     .....schema.....
 );
+```
+
+**Note:** For preventing duplicate table name, use `IF NOT EXISTS` clause.
+
+```sql
+CREATE TABLE IF NOT EXISTS table_name (
+    .....schema.....
+    .....schema.....
+    .....schema.....
+)
 ```
 
 #### 2.1.2.1. Schema: 
@@ -65,258 +80,385 @@ A schema defines the structure of a table, including:
 - Relationships
 
 ```sql
-CREATE TABLE table_name (
+CREATE TABLE IF NOT EXISTS table_name (
     column_name data_type constraints,
-    column_name data_type constraints
+    column_name data_type constraints,
 );
 ```
-**Note:** Here everything inside the parentheses is called a schema
 
-
-##### 2.1.2.1.1. Common Data Types for Schema
-
-- Numeric Types:
-
-| Type               | Description                                                | Example             |
-| ------------------ | ---------------------------------------------------------- | ------------------- |
-| `SMALLINT`         | Small integer (-32,768 to 32,767 typical)                  | age, quantity       |
-| `INTEGER`          | Standard integer (-2,147,483,648 to 2,147,483,647 typical) | default choice      |
-| `BIGINT`           | Large integer                                              | large counters      |
-| `NUMERIC(p,s)`     | Exact precision numbers                                    | money, exact values |
-| `DECIMAL(p,s)`     | Exact precision decimal numbers                            | prices              |
-| `REAL`             | Approximate float (~6 decimal digits precision)            | scientific data     |
-| `DOUBLE PRECISION` | Approximate float (~15 decimal digits precision)           | scientific data     |
-| `FLOAT(p)`         | Floating-point number with specified precision             | rarely used         |
+Example:
 
 ```sql
-CREATE TABLE numeric_types_demo (
+CREATE TABLE users (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-    small_number SMALLINT,
-    normal_number INTEGER,
-    big_number BIGINT,
-
-    exact_money DECIMAL(10,2),
-    exact_precise NUMERIC(10,6),
-
-    approx_real REAL,
-    approx_double DOUBLE PRECISION
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 ```
-
-- Character Types:
-| Type                   | Description                       | Example                     |
-| ---------------------- | --------------------------------- | --------------------------- |
-| `CHAR(n)`              | Fixed-length string               | country code, currency code |
-| `CHARACTER(n)`         | Same as CHAR(n)                   | fixed-length values         |
-| `VARCHAR(n)`           | Variable-length string with limit | names, titles               |
-| `CHARACTER VARYING(n)` | Same as VARCHAR(n)                | names, titles               |
-| `CLOB`                 | Large text content                | articles, descriptions      |
 
 ```sql
-CREATE TABLE string_types_demo (
+CREATE TABLE meals (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-    fixed_char CHAR(5),
-    short_text VARCHAR(50),
-    long_text CLOB
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+    title VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL
 );
 ```
-
-- Date and Time Types:
-
-| Type                       | Description               | Example                       |
-| -------------------------- | ------------------------- | ----------------------------- |
-| `DATE`                     | Stores date only          | `'2026-04-13'`                |
-| `TIME`                     | Stores time only          | `'14:30:00'`                  |
-| `TIME WITH TIME ZONE`      | Time with timezone        | `'14:30:00+06:00'`            |
-| `TIMESTAMP`                | Date + time               | `'2026-04-13 14:30:00'`       |
-| `TIMESTAMP WITH TIME ZONE` | Date + time with timezone | `'2026-04-13 14:30:00+06:00'` |
-| `INTERVAL`                 | Duration between times    | `'2 days'`                    |
-
-
-```sql
-CREATE TABLE datetime_types_demo (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-    only_date DATE,
-    only_time TIME,
-
-    time_with_zone TIME WITH TIME ZONE,
-
-    simple_timestamp TIMESTAMP,
-    timestamp_with_zone TIMESTAMP WITH TIME ZONE,
-
-    duration INTERVAL
-);
-```
-
-- Boolean Type: 
-
-| Type      | Description       | Example   |
-| --------- | ----------------- | --------- |
-| `BOOLEAN` | TRUE, FALSE, NULL | is_active |
-
-```sql
-CREATE TABLE boolean_demo (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-    is_active BOOLEAN
-);
-```
-
-##### 2.1.2.1.2. Common Constraints for Schema:  
-Constraints enforce rules on data stored in a table.
-
-| Constraint              | Description                         |
-| ----------------------- | ----------------------------------- |
-| PRIMARY KEY             | Uniquely identifies each row        |
-| FOREIGN KEY             | Creates relationship between tables |
-| NOT NULL                | Prevents NULL values                |
-| UNIQUE                  | Ensures all values are unique       |
-| DEFAULT                 | Provides a default value            |
-| CHECK                   | Validates data based on a condition |
-| AUTO INCREMENT / SERIAL | Automatically generates values      |
 
 ```sql
 CREATE TABLE orders (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id)
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+    user_id INT REFERENCES users(id),
+    meal_id INT REFERENCES meals(id),
+    quantity INT DEFAULT 1
+);
+```
+
+
+##### 2.1.2.1.1. Common SQL Data Types For Schema: 
+
+- Numeric types:
+
+| Type                        | Description                                          | Example                                  |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------- |
+| `SMALLINT`                  | 2 bytes (Small integer values)                       | age, quantity                            |
+| `INT/INTEGER`               | 4 bytes (Standard integer values)                    | default choice                           |
+| `BIGINT`                    | 8 bytes (Very large integer values)                  | large counters when overflow is possible |
+| `NUMERIC(p,s)/DECIMAL(p,s)` | variable (Exact numeric values with fixed precision) | money or financial data                  |
+| `REAL`                      | 4 bytes (6 decimal digits precision)                 | approximate scientific data only         |
+| `DOUBLE PRECISION`          | 8 Bytes (15 decimal digits precision)                | approximate scientific data only         |
+
+
+
+```sql
+CREATE TABLE IF NOT EXISTS numeric_types_demo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    small_number SMALLINT,                      -- 10, -5, 300
+    normal_number INT,                          -- 1000, 250000
+    big_number BIGINT,                          -- 10000000000
+
+    exact_money NUMERIC(10,2),                  -- 10.00, 10.99
+    exact_precise DECIMAL(10,6),                -- 10.123456
+
+    approx_real REAL,                           -- 10.123457 (rounded after 6 digits)
+    approx_double DOUBLE PRECISION,             -- 10.123456789123457 (rounded after 15 digits)
+);
+```
+
+Note: For `NUMERIC(p,s)/DECIMAL(p,s)`
+- Precision = Total number of digits allowed.
+- Scale = Number of digits allowed after the decimal point.
+
+SO NUMERIC(10,2) means it precision is total 10 digit (before 8 and after 2): 
+
+```js
+12345678.90   ✅ (8 before, 2 after)
+1.23          ✅ (okay)
+-99999999.99  ✅ (min)
+99999999.99   ✅ (max)
+
+123456789.12  ❌ (9 digits before → too big)
+12.123        ❌ (3 decimal places → too many)
+```
+
+- String types:
+
+| Type         | Description                                   | Example                   |
+| ------------ | --------------------------------------------- | ------------------------- |
+| `CHAR(n)`    | Fixed n length of string (padded with spaces) | country code, status code |
+| `VARCHAR(n)` | Variable n length string with limit           | names, titles             |
+| `TEXT`       | Variable-length string                        | descriptions, content     |
+
+Note: There is no performance difference between `TEXT` and `VARCHAR` in PostgreSQL. The Only Real Difference `VARCHAR(n)` adds a constraint.
+
+```sql
+CREATE TABLE IF NOT EXISTS string_types_demo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    fixed_char CHAR(5),                            -- 'A    ', 'BD   ' (padded)
+    short_text VARCHAR(50),                        -- 'Hello World'
+    long_text TEXT                                 -- large content
+);
+```
+
+- Date & Time types:
+
+| Type        | Description                         | Example                            |
+| ----------- | ----------------------------------- | ---------------------------------- |
+| `DATE`      | Date only                           | `'2026-04-13'`                     |
+| `TIME`      | Time only                           | `'14:30:00'`                       |
+| `TIMESTAMP` | Date + time (no timezone)           | `'2026-04-13 14:30:00'`            |
+| `INTERVAL`  | Duration / difference between times | `'2 days'`, `'3 hours 30 minutes'` |
+
+```sql
+CREATE TABLE IF NOT EXISTS datetime_types_demo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+
+    only_date DATE,                                 -- '2026-04-13'
+    only_time TIME,                                 -- '14:30:00'
+
+    simple_timestamp TIMESTAMP,                     -- '2026-04-13 14:30:00'
+
+    duration INTERVAL                               -- '2 days', '3 hours'
+);
+```
+
+-  Boolean Types: 
+  
+| Type           | Description          | Example   |
+| -------------- | -------------------- | --------- |
+| `BOOLEAN/BOOL` | true, false and null | is_active |
+
+
+```sql
+-- ENUM must be created first
+CREATE TYPE order_status AS ENUM ('pending', 'completed', 'cancelled');
+
+CREATE TABLE IF NOT EXISTS other_types_demo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    is_active BOOLEAN,                              -- true / false
+);
+```
+
+
+##### 2.1.2.1.2. Common SQL Constraints For Schema:
+
+| Constraint    | Description                         | Example                     |
+| ------------- | ----------------------------------- | --------------------------- |
+| `NOT NULL`    | Prevent empty values                | username, email             |
+| `UNIQUE`      | Prevent duplicate values            | email, username             |
+| `PRIMARY KEY` | Unique identifier for each row      | id                          |
+| `FOREIGN KEY` | Creates relationship between tables |                             |
+| `CHECK`       | Validates data against a condition  | age must be greater than 18 |
+| `DEFAULT`     | Sets default value                  | default choice              |
+
+- NOT NULL: 
+  
+```sql
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+``` 
+
+- UNIQUE: 
+  
+```sql
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    email VARCHAR(255) UNIQUE
+);
+```
+
+- PRIMARY KEY: 
+
+```sql
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    id INT PRIMARY KEY,
+    email VARCHAR(255)
+);
+```
+
+- FOREIGN KEY: 
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    name VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+
     -- or
-    -- user_id INT,
-    -- FOREIGN KEY (user_id) REFERENCES users(id)
+    user_id INT REFERENCES users(id) // shorthand
+);
+``` 
+
+
+- CHECK:
+
+```sql
+CREATE TABLE products (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    price DECIMAL(10,2) CHECK (price > 0),
+    stock INTEGER CHECK (stock >= 0)
 );
 ```
 
-```sql
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    is_active BOOLEAN DEFAULT TRUE
-);
-```
+- DEFAULT: 
 
 ```sql
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    age INT CHECK (age >= 18)
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
+    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 ## 2.2. ALTER:
-The `ALTER` command is used to modify existing table.
+The `ALTER` command used to modify existing databases, tables and columns.
 
+syntax: 
 ```sql
-CREATE TABLE users (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-    name VARCHAR(50),
-    email VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT,
-);
+ALTER TABLE table_name
+action;
 ```
 
-Now if we want to modify the table, we can use the `ALTER` command.
+### Database Level:
+
+- Rename database:
 
 ```sql
-ALTER TABLE users ADD COLUMN password VARCHAR(100);
-ALTER TABLE users ADD COLUMN phone VARCHAR(20);
-ALTER TABLE users DROP COLUMN description;
-ALTER TABLE users RENAME COLUMN name TO full_name;
-
--- or
-ALTER TABLE users
-    ADD COLUMN password VARCHAR(100),
-    ADD COLUMN phone VARCHAR(20)
-    DROP COLUMN description;
-    RENAME COLUMN name TO full_name
+ALTER DATABASE old_database_name RENAME TO new_database_name;
 ```
 
-Change Data Type: 
+### Table Level:
+
+- Rename table: 
 
 ```sql
-ALTER TABLE users
-ALTER COLUMN mobile TYPE VARCHAR(50);
+ALTER TABLE old_table_name RENAME TO new_table_name;
 ```
 
-Set NOT NULL:
+- Add Constraints:
 
 ```sql
-ALTER TABLE users
-ALTER COLUMN name SET NOT NULL;
+ALTER TABLE table_name
+ADD constraints new_column_name UNIQUE (old_column_name);
 ```
 
 ```sql
-ALTER TABLE users
-ALTER COLUMN name DROP NOT NULL;
+ALTER TABLE table_name
+ADD constraints new_column_name CHECK (old_column_name > 0);s
 ```
 
-Add Constraint: 
+- Remove Constraints:
 
 ```sql
-ALTER TABLE users
-ADD CONSTRAINT unique_email
-UNIQUE(email);
+ALTER TABLE table_name
+DROP CONSTRAINT column_name;
 ```
 
-Drop Constraint: 
+### Column Level: 
+- Add column: 
 
 ```sql
-ALTER TABLE users
-DROP CONSTRAINT unique_email;
+ALTER TABLE table_name
+ADD column_name data_type constraints;
 ```
 
-Rename Table: 
+- Drop column: 
+
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+- Modify column data types:
+
 ```sql
 ALTER TABLE users
-RENAME TO customers;
+ALTER COLUMN column_name TYPE new_data_type;
+```
+
+- Rename column:
+
+```sql
+ALTER TABLE table_name
+RENAME COLUMN old_column_name TO new_column_name;
+```
+
+- Add/remove constraints:
+
+```sql
+ALTER TABLE users
+ALTER COLUMN column_name SET constraints;
+```
+
+```sql
+ALTER TABLE users
+ALTER COLUMN column_name DROP constraints;
 ```
 
 
-## 2.3. DROP: 
-The `DROP` command permanently removes databases or tables.
-
-Drop Table: 
+## 2.3. DROP:
+The `DROP` command used to remove existing databases or tables.
 
 ```sql
-DROP TABLE users;
+DROP DATABASE database_name;
 ```
 
-Drop Table If Exists: 
-
 ```sql
-DROP TABLE IF EXISTS users;
-```
-
-Drop Multiple Tables: 
-
-```sql
-DROP TABLE users, orders;
-```
-
-Drop Database: 
-
-```sql
-Drop Database
+DROP TABLE table_name;
 ```
 
 
 ## 2.4. TRUNCATE:
-`TRUNCATE` removes all rows from a table Unlike DROP, the table structure remains.
+The `TRUNCATE` command used to remove existing databases or tables.
 
 ```sql
-TRUNCATE TABLE users;
+TRUNCATE DATABASE database_name;
 ```
 
 ```sql
-TRUNCATE TABLE orders, users;
+TRUNCATE TABLE table_name;
 ```
+
+Note: `DROP` and `TRUNCATE` are different. `DROP` removes the database or table completely, while `TRUNCATE` removes the data from the table, but leaves the table structure in place.
 
 ## 2.5. RENAME:
-`RENAME` changes the name of a database or table.
+The `RENAME` command used to rename existing databases or tables.
 
 ```sql
-RENAME TABLE users TO customers;
+RENAME DATABASE database_name TO new_database_name;
 ```
+
+```sql
+RENAME TABLE table_name TO new_table_name;
+```
+
 
 # 3. DML: 
 # 4. DQL:
