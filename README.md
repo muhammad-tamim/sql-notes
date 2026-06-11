@@ -10,17 +10,38 @@
         - [2.1.2.1.1. Common SQL Data Types For Schema:](#21211-common-sql-data-types-for-schema)
         - [2.1.2.1.2. Common SQL Constraints For Schema:](#21212-common-sql-constraints-for-schema)
   - [2.2. ALTER:](#22-alter)
-    - [Database Level:](#database-level)
-    - [Table Level:](#table-level)
-    - [Column Level:](#column-level)
+    - [2.2.1. Database Level:](#221-database-level)
+    - [2.2.2. Table Level:](#222-table-level)
+    - [2.2.3. Column Level:](#223-column-level)
   - [2.3. DROP:](#23-drop)
   - [2.4. TRUNCATE:](#24-truncate)
   - [2.5. RENAME:](#25-rename)
 - [3. DML:](#3-dml)
-  - [INSERT:](#insert)
-  - [UPDATE:](#update)
-  - [DELETE:](#delete)
+  - [3.1. INSERT:](#31-insert)
+  - [3.2. UPDATE:](#32-update)
+  - [3.3. DELETE:](#33-delete)
 - [4. DQL:](#4-dql)
+  - [4.1. Basic select operation:](#41-basic-select-operation)
+  - [4.2. WHERE clause:](#42-where-clause)
+    - [4.2.1. Operators:](#421-operators)
+      - [4.2.1.1. conditional operators:](#4211-conditional-operators)
+      - [4.2.1.2. logical operators:](#4212-logical-operators)
+      - [4.2.1.3. comparison operators:](#4213-comparison-operators)
+    - [4.2.2. IN:](#422-in)
+    - [4.2.3. BETWEEN:](#423-between)
+    - [4.2.4. LIKE:](#424-like)
+    - [4.2.5. Subqueries:](#425-subqueries)
+  - [4.3. ORDER BY clause:](#43-order-by-clause)
+  - [4.4. LIMIT clause:](#44-limit-clause)
+  - [4.5. DISTINCT clause:](#45-distinct-clause)
+  - [4.6. Alias clause:](#46-alias-clause)
+  - [4.7. Group By clause:](#47-group-by-clause)
+  - [4.8. Having clause:](#48-having-clause)
+  - [4.9. Aggregate functions:](#49-aggregate-functions)
+  - [4.10. Joins:](#410-joins)
+    - [4.10.1. Inner Join:](#4101-inner-join)
+    - [4.10.2. Left Join:](#4102-left-join)
+    - [4.10.3. Right Join:](#4103-right-join)
 - [5. DCL:](#5-dcl)
 - [6. TCL:](#6-tcl)
 
@@ -349,7 +370,7 @@ ALTER TABLE table_name
 action;
 ```
 
-### Database Level:
+### 2.2.1. Database Level:
 
 - Rename database:
 
@@ -357,7 +378,7 @@ action;
 ALTER DATABASE old_database_name RENAME TO new_database_name;
 ```
 
-### Table Level:
+### 2.2.2. Table Level:
 
 - Rename table: 
 
@@ -384,7 +405,7 @@ ALTER TABLE table_name
 DROP CONSTRAINT column_name;
 ```
 
-### Column Level: 
+### 2.2.3. Column Level: 
 - Add column: 
 
 ```sql
@@ -470,7 +491,7 @@ Note:
 - DDL works with structure (schema) of the database
 - DML works with data (rows) inside the database 
 
-## INSERT: 
+## 3.1. INSERT: 
 Used to add new records (rows) into a table.
 
 ```sql
@@ -488,7 +509,7 @@ VALUES
     (value1, value2, value3);
 ```
 
-## UPDATE: 
+## 3.2. UPDATE: 
 Used to modify existing data in a table.
 
 ```sql
@@ -497,7 +518,7 @@ SET column1 = value1, column2 = value2, column3 = value3
 WHERE condition;
 ```
 
-## DELETE: 
+## 3.3. DELETE: 
 Used to remove existing data from a table.
 
 ```sql
@@ -506,5 +527,229 @@ WHERE condition;
 ```
 
 # 4. DQL:
+DQL (Data Query Language) is a category of SQL commands used to retrieve (query) data from database tables.
+
+Note: 
+- DDL: Defines database structure
+- DML: Modifies data
+- DQL: Retrieves data
+
+QDL mainly consists of a single command that is `SELECT`. However `SELECT` has many clauses and features that make it the most important SQL command: 
+
+```sql
+SELECT column_list
+FROM table_name
+WHERE condition
+GROUP BY column_name
+HAVING condition
+ORDER BY column_name
+LIMIT number;
+```
+
+## 4.1. Basic select operation: 
+
+
+- select all columns:
+
+```sql
+SELECT * FROM users;
+```
+
+- select specific columns:
+
+```sql
+SELECT name, email FROM users;
+```
+
+## 4.2. WHERE clause:
+used to flter rows.
+
+### 4.2.1. Operators:
+#### 4.2.1.1. conditional operators:
+- = equal to
+- != not equal to
+- > greater than
+- < less than
+- >= greater than or equal to
+- <= less than or equal to
+
+```sql
+SELECT * FROM users WHERE city = 'Dhaka';
+```
+```sql
+SELECT * FROM users WHERE age > 25;
+```
+
+#### 4.2.1.2. logical operators:
+- AND
+- OR
+- NOT
+
+```sql
+SELECT * FROM users WHERE age > 25 AND city = 'Dhaka';
+```
+```sql
+SELECT * FROM users WHERE age > 25 OR city = 'Dhaka';
+```
+```sql
+SELECT * FROM users WHERE NOT (age > 25 AND city = 'Dhaka');
+```
+
+#### 4.2.1.3. comparison operators:
+- IN
+- NOT IN
+- BETWEEN
+- LIKE
+- IS NULL
+- IS NOT NULL
+
+```sql
+SELECT * FROM users WHERE age IN (25, 30, 35);
+```
+```sql
+SELECT * FROM users WHERE age NOT IN (25, 30, 35);
+```
+```sql
+SELECT * FROM users WHERE age BETWEEN 25 AND 35;
+```
+```sql
+SELECT * FROM users WHERE name LIKE 'A%';
+```
+```sql
+SELECT * FROM users WHERE name IS NULL;
+```
+```sql
+SELECT * FROM users WHERE name IS NOT NULL;
+```
+
+
+### 4.2.2. IN: 
+used to filter rows based on a list of values.
+
+```sql
+SELECT * FROM users WHERE age IN (25, 30, 35);
+```
+
+### 4.2.3. BETWEEN: 
+used to filter rows based on a range of values.
+
+```sql
+SELECT * FROM users WHERE age BETWEEN 25 AND 35;
+```
+
+### 4.2.4. LIKE: 
+used to filter rows based on a pattern.
+
+```sql
+SELECT * FROM users WHERE name LIKE 'A%';
+```
+
+### 4.2.5. Subqueries: 
+A query inside another query.
+
+```sql
+SELECT * FROM users WHERE age > (SELECT AVG(age) FROM users);
+```
+
+
+## 4.3. ORDER BY clause:
+used to sort the result-set in ascending(default) or descending order.
+
+```sql
+SELECT * FROM users ORDER BY name ASC;
+```
+```sql
+SELECT * FROM users ORDER BY name DESC;
+```
+
+## 4.4. LIMIT clause:
+used to limit the number of rows returned in the result-set.
+
+```sql
+SELECT * FROM users LIMIT 5;
+```
+
+## 4.5. DISTINCT clause:
+used to remove duplicate rows from the result-set.
+
+```sql
+SELECT DISTINCT city FROM users;
+```
+
+## 4.6. Alias clause: 
+used to give a table or column a temporary name.
+
+```sql
+SELECT name AS full_name FROM users;
+```
+
+## 4.7. Group By clause:
+used to group rows based on one or more columns.
+
+```sql
+SELECT city, COUNT(*) AS total_users FROM users GROUP BY city;
+```
+
+## 4.8. Having clause:
+used to filter groups based on a condition.
+
+```sql        
+SELECT city, COUNT(*) AS total_users FROM users GROUP BY city HAVING COUNT(*) > 1;
+```
+
+
+## 4.9. Aggregate functions:
+used to perform operations on a group of rows.
+
+- COUNT: returns the number of rows in a group.
+- SUM: returns the sum of all values in a group.
+- AVG: returns the average of all values in a group.
+- MIN: returns the minimum value in a group.
+- MAX: returns the maximum value in a group.
+
+```sql
+SELECT COUNT(*) FROM users;
+```
+```sql
+SELECT SUM(price) FROM orders;
+```
+```sql
+SELECT AVG(price) FROM orders;
+```
+```sql
+SELECT MIN(price) FROM orders;
+```
+```sql
+SELECT MAX(price) FROM orders;
+```
+```sql
+SELECT COUNT(DISTINCT city) FROM users;
+```
+
+
+## 4.10. Joins:
+used to combine rows from two or more tables based on a related column between them.
+
+### 4.10.1. Inner Join:
+used to combine rows from two tables based on a related column between them.
+
+```sql
+SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id;
+```
+
+### 4.10.2. Left Join:
+used to combine rows from two tables based on a related column between them.
+
+```sql
+SELECT * FROM users LEFT JOIN orders ON users.id = orders.user_id;
+```
+
+### 4.10.3. Right Join:
+used to combine rows from two tables based on a related column between them.    
+
+```sql
+SELECT * FROM users RIGHT JOIN orders ON users.id = orders.user_id;
+```
+
 # 5. DCL:
 # 6. TCL:
