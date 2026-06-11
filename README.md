@@ -43,24 +43,35 @@
     - [4.10.2. Left Join:](#4102-left-join)
     - [4.10.3. Right Join:](#4103-right-join)
 - [5. DCL:](#5-dcl)
-  - [Why DCL is Important:](#why-dcl-is-important)
-  - [Common Privileges:](#common-privileges)
-  - [GRANT:](#grant)
-  - [REVOKE:](#revoke)
+  - [5.1. Why DCL is Important:](#51-why-dcl-is-important)
+  - [5.2. Common Privileges:](#52-common-privileges)
+  - [5.3. GRANT:](#53-grant)
+  - [5.4. REVOKE:](#54-revoke)
 - [6. TCL:](#6-tcl)
+  - [6.1. What is transaction:](#61-what-is-transaction)
+  - [6.2. TCL Commands:](#62-tcl-commands)
+  - [6.3. Sample Table:](#63-sample-table)
+  - [6.4. BEGIN / START TRANSACTION:](#64-begin--start-transaction)
+  - [6.5. COMMIT:](#65-commit)
+  - [6.6. ROLLBACK:](#66-rollback)
+  - [6.7. SAVEPOINT:](#67-savepoint)
+    - [6.7.1. Rollback to Savepoint:](#671-rollback-to-savepoint)
+  - [6.8. RELEASE SAVEPOINT:](#68-release-savepoint)
+  - [6.9. Example:](#69-example)
+  - [6.10. ACID Properties:](#610-acid-properties)
 
 
 
 # 1. Introduction: 
 SQL (Structured Query Language) is a standardized language for all relational databases management systems. Every RDBMS, such as MySQL and PostgreSQL etc, uses SQL as its primary language and add extra specific features on it. There are 5 main categories of SQL Commands: 
 
-| Category | Full Form                    | commands                                               | Purpose                                                       |
-| -------- | ---------------------------- | ------------------------------------------------------ | ------------------------------------------------------------- |
-| DDL      | Data Definition Language     | `CREATE, ALTER, DROP, TRUNCATE, RENAME`                | Define and modify database structure (e.g. databases, tables) |
-| DML      | Data Manipulation Language   | `INSERT, UPDATE, DELETE`                               | Insert, update, and delete data form tables                   |
-| DQL      | Data Query Language          | `SELECT`                                               | Retrieve data from tables                                     |
-| DCL      | Data Control Language        | `GRANT, REVOKE`                                        | Control permissions and access                                |
-| TCL      | Transaction Control Language | `BEGIN/START TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT` | Manage transactions                                           |
+| Category | Full Form                    | commands                                                                  | Purpose                                                       |
+| -------- | ---------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| DDL      | Data Definition Language     | `CREATE, ALTER, DROP, TRUNCATE, RENAME`                                   | Define and modify database structure (e.g. databases, tables) |
+| DML      | Data Manipulation Language   | `INSERT, UPDATE, DELETE`                                                  | Insert, update, and delete data form tables                   |
+| DQL      | Data Query Language          | `SELECT`                                                                  | Retrieve data from tables                                     |
+| DCL      | Data Control Language        | `GRANT, REVOKE`                                                           | Control permissions and access                                |
+| TCL      | Transaction Control Language | `BEGIN/START TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT, RELEASE SAVEPOINT` | Manage transactions                                           |
 
 ![image](./assets/images/introduction/sql_commands.webp)
 
@@ -771,7 +782,7 @@ GRANT
 REVOKE
 ```
 
-## Why DCL is Important: 
+## 5.1. Why DCL is Important: 
 
 Imagine a company database:
 
@@ -784,7 +795,7 @@ Imagine a company database:
 
 DCL allows the database administrator (DBA) to control these permissions.
 
-## Common Privileges: 
+## 5.2. Common Privileges: 
 | Privilege      | Description                         |
 | -------------- | ----------------------------------- |
 | SELECT         | Read data                           |
@@ -800,7 +811,7 @@ DCL allows the database administrator (DBA) to control these permissions.
 | EXECUTE        | Execute stored procedures/functions |
 
 
-## GRANT:
+## 5.3. GRANT:
 Used to grant permissions to a user.
 
 syntax:
@@ -837,7 +848,7 @@ GRANT SELECT ON users TO role_name;
 GRANT CONNECT ON DATABASE database_name TO user_name;
 ```
 
-## REVOKE:
+## 5.4. REVOKE:
 Used to revoke permissions from a user.
 
 syntax:
@@ -877,3 +888,251 @@ REVOKE CONNECT ON DATABASE database_name FROM user_name;
 ```
 
 # 6. TCL:
+TCL (Transaction Control Language) is a category of SQL commands used to manage transactions in a database.
+
+note: 
+- DDL → Manages database structure.
+- DML → Manages data.
+- DQL → Retrieves data.
+- DCL → Manages permissions.
+- TCL → Manages transactions
+
+## 6.1. What is transaction: 
+A transaction is a group of one or more SQL statements that are treated as a single unit of work.
+
+Imagine a bank transfer:
+- Deduct $100 from Account A
+- Add $100 to Account B
+
+If step 1 succeeds but step 2 fails, the money disappears. To prevent this, both operations are grouped into a transaction.
+
+Either:
+- Both succeed → Save changes.
+- Any fails → Undo everything.
+
+## 6.2. TCL Commands:
+| Command                   | Purpose                      |
+| ------------------------- | ---------------------------- |
+| BEGIN / START TRANSACTION | Start a transaction          |
+| COMMIT                    | Save changes permanently     |
+| ROLLBACK                  | Undo changes                 |
+| SAVEPOINT                 | Create a rollback checkpoint |
+| RELEASE SAVEPOINT         | Remove a savepoint           |
+
+## 6.3. Sample Table: 
+
+```sql
+CREATE TABLE accounts (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    balance DECIMAL(10,2)
+);
+```
+
+| id  | name  | balance |
+| --- | ----- | ------- |
+| 1   | Tamim | 1000    |
+| 2   | John  | 500     |
+
+
+## 6.4. BEGIN / START TRANSACTION:
+Used to start a transaction.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+```
+
+Changes are not permanent yet.
+
+## 6.5. COMMIT:
+Used to permanently save all changes made during the transaction.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+
+COMMIT;  
+```
+
+before: 
+| id  | balance |
+| --- | ------- |
+| 1   | 1000    |
+| 2   | 500     |
+
+after:
+| id  | balance |
+| --- | ------- |
+| 1   | 900     |
+| 2   | 600     |
+
+## 6.6. ROLLBACK:
+Used to undo all changes made since the transaction began.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+
+ROLLBACK;
+```
+
+Result:
+| id  | balance |
+| --- | ------- |
+| 1   | 1000    |
+| 2   | 500     |
+
+All changes are undone.
+
+## 6.7. SAVEPOINT:
+Used to create a checkpoint inside a transaction. Instead of rolling back everything, you can roll back to a specific point.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+SAVEPOINT transfer_started;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+```
+
+At this point:
+- First update completed.
+- Savepoint created.
+- Second update completed.
+
+### 6.7.1. Rollback to Savepoint: 
+
+```sql
+ROLLBACK TO SAVEPOINT transfer_started;
+```
+This will undo only the operations performed after the savepoint.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+SAVEPOINT sp1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+
+ROLLBACK TO SAVEPOINT sp1;
+
+COMMIT;
+```
+
+| id  | balance |
+| --- | ------- |
+| 1   | 900     |
+| 2   | 500     |
+
+Explanation:
+- First update remains.
+- Second update is undone.
+- Transaction is committed.
+
+## 6.8. RELEASE SAVEPOINT:
+RELEASE SAVEPOINT.
+
+```sql
+RELEASE SAVEPOINT savepoint_name;
+```
+
+```sql
+BEGIN;
+
+SAVEPOINT sp1;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+RELEASE SAVEPOINT sp1;
+
+COMMIT;
+```
+After releasing it, you can no longer roll back to that savepoint.
+
+## 6.9. Example: 
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+SAVEPOINT deduction_done;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+
+COMMIT;
+```
+
+| id  | balance |
+| --- | ------- |
+| 1   | 900     |
+| 2   | 600     |
+
+
+## 6.10. ACID Properties: 
+Transactions follow the ACID principles.
+
+- A(Atomicity): Either all operations succeed or none.
+- C(Consistency): Data remains consistent.
+- I(Isolation): Each transaction is isolated from other transactions.
+- D(Durability): Once a transaction is committed, the changes are permanent.
+
+```sql
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;
+
+COMMIT;
+```
+
+here in the example, 
+- Either both updates succeed or both fail = Atomicity
+- Money is not lost or created during transfers = Consistency
+- Two users updating the same account won't corrupt data = Isolation
+- Once a transaction is committed, the changes are permanent = Durability
