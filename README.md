@@ -17,6 +17,9 @@
   - [2.4. TRUNCATE:](#24-truncate)
   - [2.5. RENAME:](#25-rename)
 - [3. DML:](#3-dml)
+  - [INSERT:](#insert)
+  - [UPDATE:](#update)
+  - [DELETE:](#delete)
 - [4. DQL:](#4-dql)
 - [5. DCL:](#5-dcl)
 - [6. TCL:](#6-tcl)
@@ -461,6 +464,47 @@ RENAME TABLE table_name TO new_table_name;
 
 
 # 3. DML: 
+DML (Data Manipulation Language) is a category of SQL commands used to insert, update, and delete data stored inside database tables.
+
+Note: 
+- DDL works with structure (schema) of the database
+- DML works with data (rows) inside the database 
+
+## INSERT: 
+Used to add new records (rows) into a table.
+
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+For multiple rows: 
+
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES
+    (value1, value2, value3),
+    (value1, value2, value3),
+    (value1, value2, value3);
+```
+
+## UPDATE: 
+Used to modify existing data in a table.
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2, column3 = value3
+WHERE condition;
+```
+
+## DELETE: 
+Used to remove existing data from a table.
+
+```sql
+DELETE FROM table_name
+WHERE condition;
+```
+
 # 4. DQL:
 # 5. DCL:
 # 6. TCL:
