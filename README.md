@@ -43,6 +43,10 @@
     - [4.10.2. Left Join:](#4102-left-join)
     - [4.10.3. Right Join:](#4103-right-join)
 - [5. DCL:](#5-dcl)
+  - [Why DCL is Important:](#why-dcl-is-important)
+  - [Common Privileges:](#common-privileges)
+  - [GRANT:](#grant)
+  - [REVOKE:](#revoke)
 - [6. TCL:](#6-tcl)
 
 
@@ -752,4 +756,124 @@ SELECT * FROM users RIGHT JOIN orders ON users.id = orders.user_id;
 ```
 
 # 5. DCL:
+DCL (Data Control Language) is a category of SQL commands used to manage user permissions, privileges, and access control in a database.
+
+Note: 
+- DDL → Manages database structure.
+- DML → Manages data.
+- DQL → Retrieves data.
+- DCL → Controls who can access and modify the database.
+
+The two main DCL commands are:
+
+```sql
+GRANT
+REVOKE
+```
+
+## Why DCL is Important: 
+
+Imagine a company database:
+
+| User      | Role                |
+| --------- | ------------------- |
+| Admin     | Full access         |
+| Developer | Read and write data |
+| Analyst   | Read-only access    |
+| Intern    | Limited access      |
+
+DCL allows the database administrator (DBA) to control these permissions.
+
+## Common Privileges: 
+| Privilege      | Description                         |
+| -------------- | ----------------------------------- |
+| SELECT         | Read data                           |
+| INSERT         | Add new rows                        |
+| UPDATE         | Modify existing rows                |
+| DELETE         | Remove rows                         |
+| ALL PRIVILEGES | All available permissions           |
+| CREATE         | Create database objects             |
+| ALTER          | Modify database objects             |
+| DROP           | Delete database objects             |
+| REFERENCES     | Create foreign key references       |
+| TRIGGER        | Create triggers                     |
+| EXECUTE        | Execute stored procedures/functions |
+
+
+## GRANT:
+Used to grant permissions to a user.
+
+syntax:
+
+```sql
+GRANT privilege ON table_name TO user_name;
+```
+- Grant SELECT Permission:
+
+```sql
+GRANT SELECT ON users TO analyst;
+```
+
+- Grant multiple permissions:
+  
+```sql
+GRANT SELECT, INSERT, UPDATE ON users TO developer;
+```
+
+- Grant All Permissions: 
+```sql
+GRANT ALL PRIVILEGES ON users TO admin;
+```
+
+- Grant permission to a role:
+
+```sql
+GRANT SELECT ON users TO role_name;
+```
+
+- Grant Database Access: 
+
+```sql
+GRANT CONNECT ON DATABASE database_name TO user_name;
+```
+
+## REVOKE:
+Used to revoke permissions from a user.
+
+syntax:
+
+```sql
+REVOKE privilege ON table_name FROM user_name;
+```
+
+- Revoke SELECT Permission: 
+
+```sql
+REVOKE SELECT ON users FROM analyst;
+```
+
+- Revoke multiple permissions:
+
+```sql
+REVOKE SELECT, INSERT, UPDATE ON users FROM developer;
+```
+
+- Revoke All Permissions: 
+
+```sql
+REVOKE ALL PRIVILEGES ON users FROM admin;
+```
+
+- Revoke permission from a role: 
+
+```sql
+REVOKE SELECT ON users FROM role_name;
+```
+
+- Revoke Database Access: 
+
+```sql
+REVOKE CONNECT ON DATABASE database_name FROM user_name;
+```
+
 # 6. TCL:
