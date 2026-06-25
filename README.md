@@ -19,8 +19,8 @@
           - [2.1.2.1.2.4. UNIQUE:](#212124-unique)
           - [2.1.2.1.2.5. CHECK:](#212125-check)
           - [2.1.2.1.2.6. DEFAULT:](#212126-default)
-          - [SERIAL:](#serial)
-          - [IDENTITY:](#identity)
+          - [2.1.2.1.2.7. SERIAL:](#212127-serial)
+          - [2.1.2.1.2.8. IDENTITY:](#212128-identity)
   - [2.2. ALTER:](#22-alter)
     - [2.2.1. Database Level:](#221-database-level)
       - [2.2.1.1. Rename database:](#2211-rename-database)
@@ -42,31 +42,29 @@
   - [3.3. DELETE:](#33-delete)
 - [4. DQL:](#4-dql)
   - [4.1. Basic select operation:](#41-basic-select-operation)
-  - [4.2. WHERE clause:](#42-where-clause)
-    - [4.2.1. Operators:](#421-operators)
-      - [4.2.1.1. Comparison Operators:](#4211-comparison-operators)
-      - [4.2.1.2. logical operators:](#4212-logical-operators)
-      - [4.2.1.3. Special Operators:](#4213-special-operators)
-        - [4.2.1.3.1. IN:](#42131-in)
-        - [4.2.1.3.2. NOT IN:](#42132-not-in)
-        - [4.2.1.3.3. BETWEEN:](#42133-between)
-        - [4.2.1.3.4. LIKE:](#42134-like)
-        - [4.2.1.3.5. IS NULL:](#42135-is-null)
-        - [4.2.1.3.6. IS NOT NULL:](#42136-is-not-null)
-    - [4.2.2. Subqueries:](#422-subqueries)
-  - [4.3. ORDER BY clause:](#43-order-by-clause)
-  - [4.4. LIMIT clause:](#44-limit-clause)
-  - [4.5. DISTINCT clause:](#45-distinct-clause)
-  - [4.6. Alias clause:](#46-alias-clause)
-  - [4.7. Group By clause:](#47-group-by-clause)
-  - [4.8. Having clause:](#48-having-clause)
-  - [4.9. Aggregate functions:](#49-aggregate-functions)
-  - [4.10. Joins:](#410-joins)
-    - [4.10.1. Inner Join:](#4101-inner-join)
-    - [4.10.2. Left Join:](#4102-left-join)
-    - [4.10.3. Right Join:](#4103-right-join)
-    - [4.10.4. FULL JOIN:](#4104-full-join)
-    - [4.10.5. CROSS JOIN:](#4105-cross-join)
+  - [4.2. Clause:](#42-clause)
+    - [4.2.1. Filtering (WHERE):](#421-filtering-where)
+      - [4.2.1.1. Operators:](#4211-operators)
+        - [4.2.1.1.1. With Arithmetic Operators (+, -, \*, /, %):](#42111-with-arithmetic-operators------)
+        - [4.2.1.1.2. With Comparison Operators (=, !=, \<, \>, \<=, \>=)::](#42112-with-comparison-operators------)
+        - [4.2.1.1.3. With Logical Operators (AND, OR, NOT)::](#42113-with-logical-operators-and-or-not)
+        - [4.2.1.1.4. With Range Operators (IN, NOT IN, BETWEEN, NOT BETWEEN, IS NULL, IS NOT NULL)::](#42114-with-range-operators-in-not-in-between-not-between-is-null-is-not-null)
+        - [4.2.1.1.5. With Pattern Operators (LIKE, ILIKE, NOTLIKE, ,NOTILIKE):](#42115-with-pattern-operators-like-ilike-notlike-notilike)
+      - [4.2.1.2. Subqueries:](#4212-subqueries)
+    - [4.2.2. Sorting:](#422-sorting)
+      - [4.2.2.1. DISTINCT:](#4221-distinct)
+      - [4.2.2.2. ORDER BY:](#4222-order-by)
+      - [4.2.2.3. LIMIT \& OFFSET:](#4223-limit--offset)
+    - [4.2.3. aggregations (GROUP BY, HAVING):](#423-aggregations-group-by-having)
+    - [4.2.4. Joins:](#424-joins)
+      - [4.2.4.1. Inner Join:](#4241-inner-join)
+      - [4.2.4.2. Left Join:](#4242-left-join)
+      - [4.2.4.3. Right Join:](#4243-right-join)
+      - [4.2.4.4. FULL JOIN:](#4244-full-join)
+      - [4.2.4.5. CROSS JOIN:](#4245-cross-join)
+    - [4.2.5. Alias:](#425-alias)
+  - [4.3. Common Select Functions:](#43-common-select-functions)
+  - [4.4. CASE:](#44-case)
 - [5. DCL:](#5-dcl)
   - [5.1. Why DCL is Important:](#51-why-dcl-is-important)
   - [5.2. Common Privileges:](#52-common-privileges)
@@ -426,7 +424,7 @@ CREATE TABLE users (
 );
 ```
 
-###### SERIAL: 
+###### 2.1.2.1.2.7. SERIAL: 
 
 ```sql
 CREATE TABLE users (
@@ -434,7 +432,7 @@ CREATE TABLE users (
 )
 ```
 
-###### IDENTITY: 
+###### 2.1.2.1.2.8. IDENTITY: 
 
 ```sql
 CREATE TABLE users (
@@ -742,15 +740,28 @@ SELECT * FROM users;
 SELECT name, email FROM users;
 ```
 
-## 4.2. WHERE clause:
+## 4.2. Clause:
+### 4.2.1. Filtering (WHERE):
 The WHERE clause is used to filter rows.
 
 ```sql
 SELECT * FROM users WHERE age > 25;
 ```
 
-### 4.2.1. Operators:
-#### 4.2.1.1. Comparison Operators:
+#### 4.2.1.1. Operators:
+##### 4.2.1.1.1. With Arithmetic Operators (+, -, *, /, %):
+- + = addition
+- - = subtraction
+- * = multiplication
+- / = division
+- % = modulus (remainder)
+
+```sql
+SELECT * FROM products WHERE price * quantity > 100;
+```
+
+
+##### 4.2.1.1.2. With Comparison Operators (=, !=, <, >, <=, >=)::
 - = equal to
 - != not equal to
 - > greater than
@@ -765,7 +776,7 @@ SELECT * FROM users WHERE city = 'Dhaka';
 SELECT * FROM users WHERE age > 25;
 ```
 
-#### 4.2.1.2. logical operators:
+##### 4.2.1.1.3. With Logical Operators (AND, OR, NOT)::
 - AND = Both conditions must be true
 - OR = At least one condition must be true
 - NOT = Reverses a condition
@@ -780,31 +791,29 @@ SELECT * FROM users WHERE age > 25 OR city = 'Dhaka';
 SELECT * FROM users WHERE NOT (age > 25 AND city = 'Dhaka');
 ```
 
-#### 4.2.1.3. Special Operators:
+##### 4.2.1.1.4. With Range Operators (IN, NOT IN, BETWEEN, NOT BETWEEN, IS NULL, IS NOT NULL)::
 
-##### 4.2.1.3.1. IN: 
-Used to check if a value is in a list of values.
+- IN = Used to check if a value is in a list of values.
+- NOT IN = Used to check if a value is not in a list of values.
+- BETWEEN = Used to check if a value is between two values.
+- NOT BETWEEN = Used to check if a value is not between two values.
+- IS NULL = Used to check if a value is NULL.
+- IS NOT NULL = Used to check if a value is not NULL.
 
 ```sql
 SELECT * FROM users WHERE age IN (25, 30, 35);
-```
-
-##### 4.2.1.3.2. NOT IN: 
-Used to check if a value is not in a list of values.
-
-```sql
 SELECT * FROM users WHERE age NOT IN (25, 30, 35);
-```
-
-##### 4.2.1.3.3. BETWEEN: 
-Used to check if a value is between two values.
-
-```sql
 SELECT * FROM users WHERE age BETWEEN 25 AND 35;
+SELECT * FROM users WHERE age NOT BETWEEN 25 AND 35;
+SELECT * FROM users WHERE email IS NULL;
+SELECT * FROM users WHERE email IS NOT NULL;
 ```
 
-##### 4.2.1.3.4. LIKE: 
-Used to check if a value matches a pattern.
+##### 4.2.1.1.5. With Pattern Operators (LIKE, ILIKE, NOTLIKE, ,NOTILIKE):
+- LIKE → case-sensitive pattern match
+- ILIKE → case-insensitive match (PostgreSQL-specific)
+- NOT LIKE → exclude pattern (case-sensitive)
+- NOT ILIKE → exclude pattern (case-insensitive)
 
 Common wildcard characters:
 - 'A%' -- starts with A
@@ -814,31 +823,52 @@ Common wildcard characters:
 
 ```sql
 SELECT * FROM users WHERE name LIKE 'A%';
+SELECT * FROM users WHERE email LIKE '%@gmail.com'; -- % before → anything before domain
+SELECT * FROM users WHERE name ILIKE '%tamim%'; -- Tamim, TAMIM, taMiM all valid
 ```
 
-##### 4.2.1.3.5. IS NULL: 
-Used to check if a value is NULL.
+#### 4.2.1.2. Subqueries: 
+A subquery is a query written inside another query.
+
+Users: 
+| id  | name  | age |
+| --- | ----- | --- |
+| 1   | Tamim | 25  |
+| 2   | John  | 30  |
+| 3   | Sara  | 22  |
+
+orders: 
+| id  | user_id | amount |
+| --- | ------- | ------ |
+| 1   | 1       | 100    |
+| 2   | 1       | 200    |
+| 3   | 2       | 150    |
+
 
 ```sql
-SELECT * FROM users WHERE email IS NULL;
+SELECT *
+FROM users
+WHERE id IN (
+  SELECT user_id
+  FROM orders
+);
 ```
 
-##### 4.2.1.3.6. IS NOT NULL: 
-Used to check if a value is not NULL.
+| id  | name  |
+| --- | ----- |
+| 1   | Tamim |
+| 2   | John  |
+
+
+### 4.2.2. Sorting:
+#### 4.2.2.1. DISTINCT:
+used to remove duplicate rows from the result-set.
 
 ```sql
-SELECT * FROM users WHERE email IS NOT NULL;
+SELECT DISTINCT city FROM users;
 ```
 
-### 4.2.2. Subqueries: 
-A subquery is a query inside another query.
-
-```sql
-SELECT * FROM users WHERE age > (SELECT AVG(age) FROM users);
-```
-
-
-## 4.3. ORDER BY clause:
+#### 4.2.2.2. ORDER BY:
 used to sort the result-set in ascending(default) or descending order.
 
 ```sql
@@ -849,74 +879,75 @@ SELECT * FROM users ORDER BY name DESC;
 ```
 
 
-## 4.4. LIMIT clause:
-used to limit the number of rows returned in the result-set.
+#### 4.2.2.3. LIMIT & OFFSET:
+LIMIT → how many rows to return
+OFFSET → how many rows to skip first
 
 ```sql
-SELECT * FROM users LIMIT 5;
+SELECT * FROM users ORDER BY id LIMIT 10 OFFSET 20;
 ```
 
 
-## 4.5. DISTINCT clause:
-used to remove duplicate rows from the result-set.
+### 4.2.3. aggregations (GROUP BY, HAVING):
+
+- Aggregation Clause: 
+  - GROUP BY: group rows that have the same value in a column and perform aggregations on them.
+  - HAVING: filters groups AFTER grouping by using GROUP BY
+
+- Common Aggregation Functions
+
+| Function | Meaning        |
+| -------- | -------------- |
+| SUM()    | total          |
+| COUNT()  | number of rows |
+| AVG()    | average        |
+| MAX()    | highest value  |
+| MIN()    | lowest value   |
+
 
 ```sql
-SELECT DISTINCT city FROM users;
+SELECT user_id, SUM(amount) AS total_spent
+FROM orders
+GROUP BY user_id
+HAVING SUM(amount) > 200;
 ```
 
-## 4.6. Alias clause: 
-used to give a table or column a temporary name.
+Original Table:
+
+| id  | user_id | amount | status  |
+| --- | ------- | ------ | ------- |
+| 1   | 1       | 100    | paid    |
+| 2   | 1       | 200    | paid    |
+| 3   | 2       | 150    | pending |
+| 4   | 2       | 300    | paid    |
+| 5   | 3       | 50     | paid    |
+
+
+Result: 
+| user_id | total_spent |
+| ------- | ----------- |
+| 1       | 300         |
+| 2       | 450         |
+
+
+Without HAVING: 
 
 ```sql
-SELECT name AS full_name FROM users;
+SELECT user_id, SUM(amount) AS total_spent
+FROM orders
+GROUP BY user_id;
 ```
 
-## 4.7. Group By clause:
-used to group rows based on one or more columns.
-
-```sql
-SELECT city, COUNT(*) AS total_users FROM users GROUP BY city;
-```
-
-## 4.8. Having clause:
-used to filter groups based on a condition.
-
-```sql        
-SELECT city, COUNT(*) AS total_users FROM users GROUP BY city HAVING COUNT(*) > 1;
-```
-
-here,
-- WHERE filters rows before grouping.
-- HAVING filters groups after grouping.
-
-## 4.9. Aggregate functions:
-used to perform operations on a group of rows.
-
-- COUNT: returns the number of rows in a group.
-- SUM: returns the sum of all values in a group.
-- AVG: returns the average of all values in a group.
-- MIN: returns the minimum value in a group.
-- MAX: returns the maximum value in a group.
-
-```sql
-SELECT COUNT(*) FROM users;
-SELECT COUNT(DISTINCT city) FROM users;
-```
-```sql
-SELECT SUM(price) FROM orders;
-```
-```sql
-SELECT AVG(price) FROM orders;
-```
-```sql
-SELECT MIN(price) FROM orders;
-```
-```sql
-SELECT MAX(price) FROM orders;
-```
+| user_id | total_spent |
+| ------- | ----------- |
+| 1       | 300         |
+| 2       | 450         |
+| 3       | 50          |
 
 
-## 4.10. Joins:
+
+
+### 4.2.4. Joins:
 used to combine rows from two or more tables based on a related column between them.
 
 - Example Table: 
@@ -937,7 +968,7 @@ orders:
 | 104 | 5       | Monitor  |
 
 
-### 4.10.1. Inner Join:
+#### 4.2.4.1. Inner Join:
 Returns only rows that have matching values in both tables.
 
 ```sql
@@ -955,7 +986,7 @@ ON users.id = orders.user_id;
 
 
 
-### 4.10.2. Left Join:
+#### 4.2.4.2. Left Join:
 Returns all rows from the left table and matching rows from the right table.
 
 ```sql
@@ -974,7 +1005,7 @@ ON users.id = orders.user_id;
 | 4        | David   | NULL      | NULL    | NULL     |
 
 
-### 4.10.3. Right Join:
+#### 4.2.4.3. Right Join:
 Returns all rows from the right table and matching rows from the left table.
 
 ```sql
@@ -992,7 +1023,7 @@ ON users.id = orders.user_id;
 | NULL     | NULL  | 104       | 5       | Monitor  |
 
 
-### 4.10.4. FULL JOIN: 
+#### 4.2.4.4. FULL JOIN: 
 Returns all rows from both tables.
 
 ```sql
@@ -1012,7 +1043,7 @@ ON users.id = orders.user_id;
 | NULL     | NULL    | 104       | 5       | Monitor  |
 
 
-### 4.10.5. CROSS JOIN: 
+#### 4.2.4.5. CROSS JOIN: 
 Returns every possible combination of rows from both tables.
 
 ```sql
@@ -1036,6 +1067,150 @@ CROSS JOIN orders;
 | ...     | ...      |
 
 4 users × 4 orders = 16 rows
+
+### 4.2.5. Alias: 
+used to give a table or column a temporary name.
+
+```sql
+SELECT name AS full_name FROM users;
+```
+
+## 4.3. Common Select Functions:
+
+```sql
+// Aggregate Functions:
+COUNT(), SUM(), AVG(), MIN(), MAX()
+
+// Mathematical Functions:
+ABS(), ROUND(), CEIL(), FLOOR(), POWER(), SQRT(), MOD(), RANDOM(), SIGN()
+
+// String Functions:
+CONCAT(), LENGTH(), LOWER(), UPPER(), TRIM(), SUBSTRING(), REPLACE(), POSITION(), LPAD(), RPAD()
+
+// Date & Time Functions:
+NOW(), CURRENT_DATE, CURRENT_TIME, AGE(), DATE_PART(), DATE_TRUNC(), EXTRACT()
+
+// Conditional Functions:
+COALESCE(), NULLIF(), GREATEST(), LEAST()
+
+// Type Conversion Functions:
+CAST(), TO_CHAR(), TO_DATE(), TO_NUMBER()
+
+// Array Functions:
+ARRAY_APPEND(), ARRAY_PREPEND(), ARRAY_REMOVE(), ARRAY_REPLACE(), ARRAY_LENGTH(), UNNEST()
+```
+
+## 4.4. CASE: 
+CASE is SQL’s way of doing if-else logic inside queries.
+
+Syntax: 
+
+```sql
+CASE
+  WHEN condition THEN result
+  WHEN condition THEN result
+  ELSE result
+END
+```
+
+
+- Example 1: 
+
+| id  | name  | age | country |
+| --- | ----- | --- | ------- |
+| 1   | Tamim | 25  | BD      |
+| 2   | John  | 17  | USA     |
+| 3   | Sara  | 30  | UK      |
+| 4   | Alex  | 15  | USA     |
+
+
+```sql
+SELECT
+  name,
+  age,
+  CASE
+    WHEN age >= 18 THEN 'Adult'
+    ELSE 'Minor'
+  END AS age_group
+FROM users;
+```
+
+Result: 
+| name  | age | age_group |
+| ----- | --- | --------- |
+| Tamim | 25  | Adult     |
+| John  | 17  | Minor     |
+| Sara  | 30  | Adult     |
+| Alex  | 15  | Minor     |
+
+
+Example 2: 
+
+| id  | amount | status  |
+| --- | ------ | ------- |
+| 1   | 100    | paid    |
+| 2   | 200    | pending |
+| 3   | 300    | failed  |
+
+
+```sql
+SELECT
+  id,
+  amount,
+  status,
+  CASE
+    WHEN status = 'paid' THEN '✅ Completed'
+    WHEN status = 'pending' THEN '⏳ Processing'
+    WHEN status = 'failed' THEN '❌ Rejected'
+    ELSE 'Unknown'
+  END AS status_label
+FROM orders;
+```
+
+Result: 
+
+| id  | amount | status  | status_label |
+| --- | ------ | ------- | ------------ |
+| 1   | 100    | paid    | ✅ Completed  |
+| 2   | 200    | pending | ⏳ Processing |
+| 3   | 300    | failed  | ❌ Rejected   |
+
+- Example 3: With where
+
+```sql
+SELECT *
+FROM users
+WHERE
+  CASE
+    WHEN age >= 18 THEN true
+    ELSE false
+  END = true;
+```
+
+- Example 4: with ORDER BY
+
+```sql
+SELECT *
+FROM orders
+ORDER BY
+  CASE
+    WHEN status = 'paid' THEN 1
+    WHEN status = 'pending' THEN 2
+    WHEN status = 'failed' THEN 3
+    ELSE 4
+  END;
+```
+
+- Example 5: With Aggregation
+
+```sql
+SELECT
+  COUNT(*) AS total_users,
+  SUM(CASE WHEN age >= 18 THEN 1 ELSE 0 END) AS adults,
+  SUM(CASE WHEN age < 18 THEN 1 ELSE 0 END) AS minors
+FROM users;
+```
+
 
 # 5. DCL:
 DCL (Data Control Language) is a category of SQL commands used to manage user permissions, privileges, and access control in a database. It includes the following commands: `GRANT, REVOKE`
