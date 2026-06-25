@@ -6,39 +6,34 @@
   - [2.1. CREATE:](#21-create)
     - [2.1.1. CREATE DATABASE:](#211-create-database)
     - [2.1.2. CREATE TABLE:](#212-create-table)
-      - [2.1.2.1. CREATE TABLE IF NOT EXISTS:](#2121-create-table-if-not-exists)
-      - [2.1.2.2. Schema:](#2122-schema)
-        - [2.1.2.2.1. Common SQL Data Types:](#21221-common-sql-data-types)
-          - [2.1.2.2.1.1. Numeric types:](#212211-numeric-types)
-          - [2.1.2.2.1.2. String types:](#212212-string-types)
-          - [2.1.2.2.1.3. Date \& Time types:](#212213-date--time-types)
-          - [2.1.2.2.1.4. Boolean Types:](#212214-boolean-types)
-        - [2.1.2.2.2. Common SQL Constraints:](#21222-common-sql-constraints)
-          - [2.1.2.2.2.1. PRIMARY KEY:](#212221-primary-key)
-          - [2.1.2.2.2.2. FOREIGN KEY:](#212222-foreign-key)
-          - [2.1.2.2.2.3. NOT NULL:](#212223-not-null)
-          - [2.1.2.2.2.4. UNIQUE:](#212224-unique)
-          - [2.1.2.2.2.5. CHECK:](#212225-check)
-          - [2.1.2.2.2.6. DEFAULT:](#212226-default)
+      - [2.1.2.1. Schema:](#2121-schema)
+        - [2.1.2.1.1. Data Types:](#21211-data-types)
+          - [2.1.2.1.1.1. Numeric types:](#212111-numeric-types)
+          - [2.1.2.1.1.2. String types:](#212112-string-types)
+          - [2.1.2.1.1.3. Date \& Time types:](#212113-date--time-types)
+          - [2.1.2.1.1.4. Others Types:](#212114-others-types)
+        - [2.1.2.1.2. Constraints:](#21212-constraints)
+          - [2.1.2.1.2.1. PRIMARY KEY:](#212121-primary-key)
+          - [2.1.2.1.2.2. FOREIGN KEY:](#212122-foreign-key)
+          - [2.1.2.1.2.3. NOT NULL:](#212123-not-null)
+          - [2.1.2.1.2.4. UNIQUE:](#212124-unique)
+          - [2.1.2.1.2.5. CHECK:](#212125-check)
+          - [2.1.2.1.2.6. DEFAULT:](#212126-default)
+          - [SERIAL:](#serial)
+          - [IDENTITY:](#identity)
   - [2.2. ALTER:](#22-alter)
     - [2.2.1. Database Level:](#221-database-level)
       - [2.2.1.1. Rename database:](#2211-rename-database)
     - [2.2.2. Table Level:](#222-table-level)
       - [2.2.2.1. Rename table:](#2221-rename-table)
       - [2.2.2.2. Add table constraint:](#2222-add-table-constraint)
-        - [2.2.2.2.1. Primary key:](#22221-primary-key)
-        - [2.2.2.2.2. Foreign key:](#22222-foreign-key)
-        - [2.2.2.2.3. Unique:](#22223-unique)
-        - [2.2.2.2.4. Check:](#22224-check)
       - [2.2.2.3. Remove table Constraints:](#2223-remove-table-constraints)
     - [2.2.3. Column Level:](#223-column-level)
       - [2.2.3.1. Add column:](#2231-add-column)
       - [2.2.3.2. Drop column:](#2232-drop-column)
       - [2.2.3.3. Rename column:](#2233-rename-column)
       - [2.2.3.4. Change column data types:](#2234-change-column-data-types)
-      - [2.2.3.5. Add/DROP constraints(Only NOT NULL \& DEFAULT):](#2235-adddrop-constraintsonly-not-null--default)
-        - [2.2.3.5.1. Not NULL:](#22351-not-null)
-      - [2.2.3.6. DEFAULT:](#2236-default)
+      - [2.2.3.5. Add/DROP constraints(NOT NULL \& DEFAULT):](#2235-adddrop-constraintsnot-null--default)
   - [2.3. DROP:](#23-drop)
   - [2.4. TRUNCATE:](#24-truncate)
 - [3. DML:](#3-dml)
@@ -143,7 +138,6 @@ CREATE TABLE table_name (
    -- column_definition
 );
 ```
-#### 2.1.2.1. CREATE TABLE IF NOT EXISTS:
 For preventing duplicate table name use `IF NOT EXISTS` clause.
 
 ```sql
@@ -159,7 +153,7 @@ CREATE TABLE IF NOT EXISTS table_name (
   - CREATE TABLE → Command
   - IF NOT EXISTS → Clause
 
-#### 2.1.2.2. Schema: 
+#### 2.1.2.1. Schema: 
 A schema defines the structure of a table, including:
 - Table name
 - Column names
@@ -209,9 +203,9 @@ CREATE TABLE orders (
 
 here, The overall structure of a table, including the table name, columns, data types, constraints, and relationships etc is called a schema.
 
-##### 2.1.2.2.1. Common SQL Data Types: 
+##### 2.1.2.1.1. Data Types: 
 
-###### 2.1.2.2.1.1. Numeric types:
+###### 2.1.2.1.1.1. Numeric types:
 
 | Type                        | Description                                          | Example                                  |
 | --------------------------- | ---------------------------------------------------- | ---------------------------------------- |
@@ -222,24 +216,15 @@ here, The overall structure of a table, including the table name, columns, data 
 | `REAL`                      | 4 bytes (6 decimal digits precision)                 | approximate scientific data only         |
 | `DOUBLE PRECISION`          | 8 Bytes (15 decimal digits precision)                | approximate scientific data only         |
 
+- Only PostgreSQL Specific:
 
-```sql
-CREATE TABLE IF NOT EXISTS numeric_types_demo (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
-    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+| Type         | Description                                                 | Example                             |
+| ------------ | ----------------------------------------------------------- | ----------------------------------- |
+| `FLOAT(n)`   | alias for REAL or DOUBLE PRECISION depending on precision n | rarely used (prefer explicit types) |
+| `SERIAL`     | 4 bytes same as INT (Auto increment 1, 2, 3, 4)             | For PRIMARY KEY                     |
+| ` BIGSERIAL` | 8 bytes same as BIGINT (Auto increment 1, 2, 3, 4)          | For Large PRIMARY KEY               |
 
-    small_number SMALLINT,                      -- 10, -5, 300
-    normal_number INT,                          -- 1000, 250000
-    big_number BIGINT,                          -- 10000000000
-
-    exact_money NUMERIC(10,2),                  -- 12345678.90
-    exact_precise DECIMAL(10,6),                -- 123456.789123
-
-    approx_real REAL,                           -- 10.123457 (rounded after 6 digits)
-    approx_double DOUBLE PRECISION,             -- 10.123456789123457 (rounded after 15 digits)
-);
-```
+  
 
 **Note:** For `NUMERIC(p,s)/DECIMAL(p,s)`
 - Precision = Total number of digits allowed.
@@ -257,7 +242,7 @@ SO NUMERIC(10,2) means it precision is total 10 digit (before 8 and after 2):
 12.123        ❌ (3 decimal places → too many)
 ```
 
-###### 2.1.2.2.1.2. String types:
+###### 2.1.2.1.1.2. String types:
 
 | Type         | Description                                   | Example                   |
 | ------------ | --------------------------------------------- | ------------------------- |
@@ -279,7 +264,7 @@ CREATE TABLE IF NOT EXISTS string_types_demo (
 );
 ```
 
-###### 2.1.2.2.1.3. Date & Time types:
+###### 2.1.2.1.1.3. Date & Time types:
 
 | Type        | Description                         | Example                            |
 | ----------- | ----------------------------------- | ---------------------------------- |
@@ -288,41 +273,32 @@ CREATE TABLE IF NOT EXISTS string_types_demo (
 | `TIMESTAMP` | Date + time (no timezone)           | `'2026-04-13 14:30:00'`            |
 | `INTERVAL`  | Duration / difference between times | `'2 days'`, `'3 hours 30 minutes'` |
 
-```sql
-CREATE TABLE IF NOT EXISTS datetime_types_demo (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
-    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
+- Only PostgreSQL Specific:
+
+| Type          | Description                             | Example                    |
+| ------------- | --------------------------------------- | -------------------------- |
+| `TIMESTAMPTZ` | Date + time with timezone (recommended) | `'2026-04-13 14:30:00+06'` |
 
 
-    only_date DATE,                                 -- '2026-04-13'
-    only_time TIME,                                 -- '14:30:00'
 
-    simple_timestamp TIMESTAMP,                     -- '2026-04-13 14:30:00'
-
-    duration INTERVAL                               -- '2 days', '3 hours'
-);
-```
-
-######  2.1.2.2.1.4. Boolean Types: 
+###### 2.1.2.1.1.4. Others Types: 
   
 | Type           | Description          | Example   |
 | -------------- | -------------------- | --------- |
 | `BOOLEAN/BOOL` | true, false and null | is_active |
 
+- only PostgreSQL Specific:
 
-```sql
-CREATE TABLE IF NOT EXISTS other_types_demo (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    -- id SERIAL PRIMARY KEY, -- only works on PostgreSQL
-    -- id INT AUTO_INCREMENT PRIMARY KEY, -- only works on MySQL
-
-    is_active BOOLEAN,                              -- true / false
-);
-```
+| Type            | Description                                        | Example                                  |
+| --------------- | -------------------------------------------------- | ---------------------------------------- |
+| `UUID`          | Universally unique identifier                      | `'550e8400-e29b-41d4-a716-446655440000'` |
+| `JSON`          | Stores JSON as text (text format, slower)          | `'{"name": "Tamim"}'`                    |
+| `JSONB`         | Binary JSON (faster, indexable, recommended)       | `'{"name": "Tamim"}'`                    |
+| `ARRAY: TYPE[]` | Stores multiple values in one column of same types | `'{1,2,3}'`, `'{apple,banana}'`          |
+| `ENUM`          | Fixed set of predefined values                     | `user_role: 'admin'`, `'seller'`         |
 
 
-##### 2.1.2.2.2. Common SQL Constraints:
+##### 2.1.2.1.2. Constraints:
 
 | Constraint    | Description                         | Example                     |
 | ------------- | ----------------------------------- | --------------------------- |
@@ -333,7 +309,15 @@ CREATE TABLE IF NOT EXISTS other_types_demo (
 | `CHECK`       | Validates data against a condition  | age must be greater than 18 |
 | `DEFAULT`     | Sets default value                  | default choice              |
 
-###### 2.1.2.2.2.1. PRIMARY KEY: 
+- Only PostgreSQL Specific:
+
+| Constraint | Description                   | Example Use                   |
+| ---------- | ----------------------------- | ----------------------------- |
+| `SERIAL `  | Auto-increment value          | id generation for primary key |
+| `IDENTITY` | Modern replacement for SERIAL | id generation for primary key |
+
+
+###### 2.1.2.1.2.1. PRIMARY KEY: 
 
 ```sql
 CREATE TABLE users (
@@ -346,7 +330,7 @@ CREATE TABLE users (
 );
 ```
 
-###### 2.1.2.2.2.2. FOREIGN KEY: 
+###### 2.1.2.1.2.2. FOREIGN KEY: 
 
 ```sql
 CREATE TABLE IF NOT EXISTS users (
@@ -372,8 +356,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
 **Note:** If we don't specify the `ON DELETE` option, the default is `NO ACTION`. Means we can't delete the parent row if any child rows reference it.
 
-- ON DELETE options:
-    
+- ON DELETE options:  
   - CASCADE: If parent is deleted → automatically delete all related child rows
 
 ```sql
@@ -392,7 +375,7 @@ CREATE TABLE IF NOT EXISTS orders (
  user_id INT REFERENCES users(id) ON DELETE RESTRICT
 ```
 
-###### 2.1.2.2.2.3. NOT NULL: 
+###### 2.1.2.1.2.3. NOT NULL: 
   
 ```sql
 CREATE TABLE users (
@@ -405,7 +388,7 @@ CREATE TABLE users (
 );
 ``` 
 
-###### 2.1.2.2.2.4. UNIQUE: 
+###### 2.1.2.1.2.4. UNIQUE: 
   
 ```sql
 CREATE TABLE users (
@@ -417,7 +400,7 @@ CREATE TABLE users (
 );
 ```
 
-###### 2.1.2.2.2.5. CHECK:
+###### 2.1.2.1.2.5. CHECK:
 
 ```sql
 CREATE TABLE products (
@@ -430,7 +413,7 @@ CREATE TABLE products (
 );
 ```
 
-###### 2.1.2.2.2.6. DEFAULT: 
+###### 2.1.2.1.2.6. DEFAULT: 
 
 ```sql
 CREATE TABLE users (
@@ -442,6 +425,23 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
+
+###### SERIAL: 
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+)
+```
+
+###### IDENTITY: 
+
+```sql
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+)
+```
+
 
 ## 2.2. ALTER:
 The `ALTER` command used to modify existing databases, tables and columns.
@@ -469,7 +469,7 @@ ALTER TABLE users RENAME TO customers;
 #### 2.2.2.2. Add table constraint:
 Note: Not NULL and DEFAULT are not table level operation in sql instead they are column level operation.
 
-##### 2.2.2.2.1. Primary key:
+- Primary key:
 
 - Syntax:
 
@@ -487,7 +487,7 @@ ADD CONSTRAINT pk_students
 PRIMARY KEY (student_id);
 ```
 
-##### 2.2.2.2.2. Foreign key:
+- Foreign key:
 
 - Syntax:
 
@@ -507,7 +507,7 @@ FOREIGN KEY (customer_id)
 REFERENCES customers(customer_id);
 ```
 
-##### 2.2.2.2.3. Unique: 
+- Unique: 
 
 - Syntax:
 
@@ -525,7 +525,7 @@ ADD CONSTRAINT uk_orders_customer
 UNIQUE (customer_id);
 ```
 
-##### 2.2.2.2.4. Check: 
+- Check: 
 
 - Syntax:
 
@@ -594,9 +594,9 @@ ALTER COLUMN column_name
 SET DATA TYPE new_data_type;
 ```
 
-#### 2.2.3.5. Add/DROP constraints(Only NOT NULL & DEFAULT):
+#### 2.2.3.5. Add/DROP constraints(NOT NULL & DEFAULT):
 
-##### 2.2.3.5.1. Not NULL:
+- Not NULL:
 ```sql
 ALTER TABLE table_name
 ALTER COLUMN column_name
@@ -609,7 +609,7 @@ ALTER COLUMN column_name
 DROP NOT NULL;
 ```
 
-#### 2.2.3.6. DEFAULT: 
+- DEFAULT: 
 
 ```sql
 ALTER TABLE table_name
